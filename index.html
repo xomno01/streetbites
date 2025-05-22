@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreetBites Delights - Ẩm Thực Đường Phố</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .font-pacifico {
+            font-family: 'Pacifico', cursive;
+        }
+        .hero-bg {
+            background-image: url('https://placehold.co/1920x1080/FFD700/333333?text=Ảnh+Xe+Tải+Đồ+Ăn+Đẹp+Mắt');
+            background-size: cover;
+            background-position: center;
+        }
+        .menu-card:hover .menu-image {
+            transform: scale(1.05);
+        }
+        .menu-image {
+            transition: transform 0.3s ease-in-out;
+        }
+        .nav-item {
+            transition: color 0.3s ease;
+        }
+        .nav-item:hover {
+            color: #F59E0B; /* Tailwind amber-500 */
+        }
+        .btn-primary {
+            background-color: #F59E0B; /* amber-500 */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #D97706; /* amber-600 */
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #fbbf24; /* amber-400 */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #f59e0b; /* amber-500 */
+            transform: translateY(-2px);
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #F59E0B; /* amber-500 */
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+        /* Hiệu ứng khói cho món ăn nóng (ví dụ) */
+        .steam-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .steam-effect::before {
+            content: '♨'; /* Hoặc một SVG/ảnh khói */
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: rgba(200, 200, 200, 0.5);
+            animation: steam 2s infinite linear;
+            opacity: 0;
+        }
+        .menu-card:hover .steam-effect::before {
+            opacity: 1;
+        }
+        @keyframes steam {
+            0% { transform: translate(-50%, 0) scale(1); opacity: 0.5; }
+            50% { transform: translate(-45%, -30px) scale(1.2); opacity: 0.2; }
+            100% { transform: translate(-50%, -60px) scale(1.5); opacity: 0; }
+        }
+
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        .gemini-suggestion-box {
+            min-height: 100px;
+            border: 2px dashed #F59E0B; /* amber-500 */
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #F59E0B; /* amber-500 */
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-white shadow-md fixed w-full z-50 top-0">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="font-pacifico text-3xl text-amber-500">StreetBites</a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#home" class="nav-item text-gray-700">Trang Chủ</a>
+                <a href="#about" class="nav-item text-gray-700">Về Chúng Tôi</a>
+                <a href="#menu" class="nav-item text-gray-700">Thực Đơn</a>
+                <a href="#location" class="nav-item text-gray-700">Địa Điểm</a>
+                <a href="#contact" class="nav-item text-gray-700">Liên Hệ</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <a href="#home" class="block py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">Trang Chủ</a>
+            <a href="#about" class="block py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">Về Chúng Tôi</a>
+            <a href="#menu" class="block py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">Thực Đơn</a>
+            <a href="#location" class="block py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">Địa Điểm</a>
+            <a href="#contact" class="block py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">Liên Hệ</a>
+        </div>
+    </header>
+
+    <section id="home" class="hero-bg h-screen flex items-center justify-center text-white pt-16">
+        <div class="text-center bg-black bg-opacity-50 p-10 rounded-lg" data-aos="fade-up">
+            <h1 class="font-pacifico text-6xl md:text-8xl mb-4">StreetBites Delights</h1>
+            <p class="text-xl md:text-2xl mb-8">Khám phá hương vị đường phố đích thực!</p>
+            <a href="#menu" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg">Xem Thực Đơn Ngay</a>
+        </div>
+    </section>
+
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="section-title text-4xl font-bold text-center mb-12" data-aos="fade-down">Về <span class="font-pacifico text-amber-500">StreetBites</span></h2>
+            <div class="flex flex-col md:flex-row items-center gap-10">
+                <div class="md:w-1/2" data-aos="fade-right">
+                    <img src="https://placehold.co/600x400/F59E0B/FFFFFF?text=Đội+Ngũ+StreetBites" alt="Đội ngũ StreetBites" class="rounded-lg shadow-xl w-full">
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left">
+                    <p class="text-lg mb-4 text-gray-700">Chào mừng bạn đến với StreetBites Delights! Chúng tôi không chỉ là một xe tải đồ ăn nhanh, chúng tôi là một hành trình ẩm thực đầy đam mê. Với những nguyên liệu tươi ngon nhất và công thức độc quyền, mỗi món ăn đều được chế biến tỉ mỉ để mang đến trải nghiệm khó quên.</p>
+                    <p class="text-lg mb-4 text-gray-700">Từ những chiếc burger kẹp thịt mọng nước đến những xiên que nướng thơm lừng, chúng tôi tin rằng đồ ăn đường phố có thể vừa ngon miệng, vừa chất lượng. Hãy cùng StreetBites khám phá những hương vị tuyệt vời nhất nhé!</p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Nguyên liệu tươi sạch mỗi ngày</li>
+                        <li>Công thức độc đáo, hương vị khó quên</li>
+                        <li>Phục vụ nhanh chóng, thân thiện</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="section-title text-4xl font-bold text-center mb-8" data-aos="fade-down">Thực Đơn <span class="font-pacifico text-amber-500">Hấp Dẫn</span></h2>
+            
+            <div class="text-center mb-12" data-aos="fade-up">
+                <button id="suggestDishButton" class="btn-secondary text-white font-semibold py-3 px-6 rounded-full text-lg shadow-md hover:shadow-lg">
+                    ✨ Gợi Ý Món Đặc Biệt Hôm Nay
+                </button>
+                <div id="dailySpecialLoading" class="hidden my-4 flex justify-center items-center">
+                    <div class="loading-spinner"></div>
+                    <p class="ml-2 text-gray-600">Đang hỏi ý kiến đầu bếp AI...</p>
+                </div>
+                <div id="dailySpecialSuggestion" class="gemini-suggestion-box mt-4 p-6 rounded-lg bg-amber-50 text-gray-700 hidden">
+                    </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="menu-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-dish-name="Burger Bò Đặc Biệt" data-dish-description="Thịt bò Úc xay, phô mai cheddar tan chảy, xà lách, cà chua, hành tây và sốt StreetBites bí truyền. Một tuyệt tác burger!" data-dish-price="79.000 VNĐ" data-dish-image="https://placehold.co/400x300/4CAF50/FFFFFF?text=Burger+Bò+Đặc+Biệt">
+                    <div class="menu-image steam-effect">
+                        <img src="https://placehold.co/400x300/4CAF50/FFFFFF?text=Burger+Bò+Đặc+Biệt" alt="Burger Bò Đặc Biệt" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-2 text-amber-600">Burger Bò Đặc Biệt</h3>
+                        <p class="text-gray-600 text-sm mb-3">Thịt bò Úc, phô mai cheddar, rau củ tươi và sốt bí truyền.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold text-amber-500">79.000 VNĐ</span>
+                            <button class="menu-item-details-button btn-primary text-white text-sm py-2 px-4 rounded-full">Chi tiết</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="100" data-dish-name="Xiên Que Gà Nướng BBQ" data-dish-description="Thịt gà mềm được tẩm ướp gia vị BBQ đậm đà, nướng trên than hồng thơm phức. Ăn là ghiền!" data-dish-price="25.000 VNĐ/xiên" data-dish-image="https://placehold.co/400x300/FFC107/333333?text=Xiên+Que+Gà+BBQ">
+                     <div class="menu-image steam-effect">
+                        <img src="https://placehold.co/400x300/FFC107/333333?text=Xiên+Que+Gà+BBQ" alt="Xiên Que Gà Nướng BBQ" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-2 text-amber-600">Xiên Que Gà BBQ</h3>
+                        <p class="text-gray-600 text-sm mb-3">Thịt gà tẩm ướp đậm đà, nướng than hồng thơm lừng.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold text-amber-500">25.000 VNĐ/xiên</span>
+                             <button class="menu-item-details-button btn-primary text-white text-sm py-2 px-4 rounded-full">Chi tiết</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="200" data-dish-name="Khoai Tây Chiên Giòn" data-dish-description="Khoai tây tươi cắt sợi, chiên vàng giòn rụm, lắc cùng phô mai hoặc muối ớt tùy chọn. Món ăn vặt không thể thiếu!" data-dish-price="30.000 VNĐ" data-dish-image="https://placehold.co/400x300/E91E63/FFFFFF?text=Khoai+Tây+Chiên">
+                     <div class="menu-image"> <img src="https://placehold.co/400x300/E91E63/FFFFFF?text=Khoai+Tây+Chiên" alt="Khoai Tây Chiên Giòn" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-2 text-amber-600">Khoai Tây Chiên</h3>
+                        <p class="text-gray-600 text-sm mb-3">Khoai tây vàng giòn, lựa chọn lắc phô mai hoặc muối ớt.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold text-amber-500">30.000 VNĐ</span>
+                            <button class="menu-item-details-button btn-primary text-white text-sm py-2 px-4 rounded-full">Chi tiết</button>
+                        </div>
+                    </div>
+                </div>
+                 <div class="menu-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="300" data-dish-name="Nước Chanh Leo Giải Nhiệt" data-dish-description="Chanh leo tươi mát lạnh, chua ngọt hài hòa, đánh tan cơn khát mùa hè." data-dish-price="20.000 VNĐ" data-dish-image="https://placehold.co/400x300/03A9F4/FFFFFF?text=Nước+Chanh+Leo">
+                    <div class="menu-image">
+                        <img src="https://placehold.co/400x300/03A9F4/FFFFFF?text=Nước+Chanh+Leo" alt="Nước Chanh Leo" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-2 text-amber-600">Nước Chanh Leo</h3>
+                        <p class="text-gray-600 text-sm mb-3">Chanh leo tươi mát lạnh, chua ngọt hài hòa.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xl font-bold text-amber-500">20.000 VNĐ</span>
+                            <button class="menu-item-details-button btn-primary text-white text-sm py-2 px-4 rounded-full">Chi tiết</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="location" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="section-title text-4xl font-bold text-center mb-12" data-aos="fade-down">Chúng Tôi <span class="font-pacifico text-amber-500">Ở Đâu?</span></h2>
+            <div class="flex flex-col lg:flex-row gap-10 items-start">
+                <div class="lg:w-2/3" data-aos="fade-right">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-700">Lịch Trình Di Chuyển</h3>
+                    <div class="space-y-4 bg-gray-50 p-6 rounded-lg shadow">
+                        <div>
+                            <h4 class="text-lg font-semibold text-amber-600">Thứ 2 - Thứ 6 (17:00 - 22:00)</h4>
+                            <p class="text-gray-600">📍 Công viên Lê Thị Riêng, Quận 10 (Gần cổng chính)</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-amber-600">Thứ 7 - Chủ Nhật (16:00 - 23:00)</h4>
+                            <p class="text-gray-600">📍 Phố đi bộ Nguyễn Huệ, Quận 1 (Khu vực ẩm thực)</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-amber-600">Sự kiện đặc biệt:</h4>
+                            <p class="text-gray-600">🎉 Theo dõi fanpage để cập nhật các lễ hội ẩm thực chúng tôi tham gia!</p>
+                        </div>
+                    </div>
+                     <p class="mt-6 text-gray-700 italic">Lưu ý: Lịch trình có thể thay đổi, vui lòng kiểm tra fanpage của chúng tôi để có thông tin mới nhất.</p>
+                </div>
+                <div class="lg:w-1/3" data-aos="fade-left">
+                     <h3 class="text-2xl font-semibold mb-4 text-gray-700">Bản Đồ (Minh Họa)</h3>
+                    <img src="https://placehold.co/600x450/A5D6A7/333333?text=Bản+Đồ+Vị+Trí+Xe+Tải" alt="Bản đồ vị trí" class="rounded-lg shadow-xl w-full">
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 bg-amber-500 text-white">
+        <div class="container mx-auto px-6">
+            <h2 class="section-title text-4xl font-bold text-center mb-12 !text-white after:!bg-white" data-aos="fade-down">Liên Hệ <span class="font-pacifico">StreetBites</span></h2>
+            <div class="max-w-2xl mx-auto bg-white text-gray-800 p-8 rounded-xl shadow-2xl" data-aos="flip-up">
+                <form action="#" method="POST" id="contactForm">
+                    <div class="mb-4">
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên</label>
+                        <input type="text" name="name" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500" placeholder="Nguyễn Văn A">
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" name="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500" placeholder="bạn@email.com">
+                    </div>
+                    <div class="mb-4">
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Lời Nhắn</label>
+                        <textarea name="message" id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500" placeholder="StreetBites ơi, đồ ăn ngon quá!"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg">Gửi Tin Nhắn</button>
+                    </div>
+                </form>
+
+                <div class="mt-10 pt-8 border-t border-gray-200" data-aos="fade-up">
+                    <h3 class="text-2xl font-semibold text-center mb-4 text-gray-700">Cần ý tưởng cho sự kiện?</h3>
+                    <p class="text-center text-gray-600 mb-4">Mô tả ngắn về sự kiện của bạn (ví dụ: "tiệc sinh nhật 10 người", "liên hoan công ty ngoài trời 50 người", "họp mặt bạn bè cuối tuần") và để StreetBites AI gợi ý nhé!</p>
+                    <div>
+                        <label for="eventType" class="block text-sm font-medium text-gray-700 mb-1">Mô tả sự kiện của bạn:</label>
+                        <input type="text" id="eventType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500 mb-3" placeholder="VD: Tiệc sinh nhật cho bé gái 5 tuổi">
+                    </div>
+                    <div class="text-center">
+                        <button id="suggestEventButton" class="btn-secondary text-white font-semibold py-3 px-6 rounded-full text-lg shadow-md hover:shadow-lg">
+                            ✨ Lên Ý Tưởng Sự Kiện Cùng StreetBites!
+                        </button>
+                    </div>
+                    <div id="eventIdeaLoading" class="hidden my-4 flex justify-center items-center">
+                        <div class="loading-spinner"></div>
+                        <p class="ml-2 text-gray-600">AI đang lên kế hoạch...</p>
+                    </div>
+                    <div id="eventIdeaSuggestion" class="gemini-suggestion-box mt-4 p-6 rounded-lg bg-amber-50 text-gray-700 hidden">
+                        </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <p class="text-lg">Hoặc gọi ngay cho chúng tôi: <a href="tel:0901234567" class="font-bold text-amber-600 hover:underline">090.123.4567</a></p>
+                    <p class="mt-2">Theo dõi StreetBites trên:
+                        <a href="#" class="text-amber-600 hover:text-amber-700 mx-1">Facebook</a> |
+                        <a href="#" class="text-amber-600 hover:text-amber-700 mx-1">Instagram</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-gray-300 py-8 text-center">
+        <p>&copy; <span id="currentYear"></span> StreetBites Delights. Mọi quyền được bảo lưu.</p>
+        <p class="text-sm">Thiết kế với <span class="text-red-500">&hearts;</span> bởi AI.</p>
+    </footer>
+
+    <div id="dishModal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 opacity-0 pointer-events-none z-[100]">
+        <div class="modal-content bg-white rounded-lg shadow-xl max-w-lg w-full transform scale-95">
+            <div class="relative">
+                <button id="closeModalButton" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl z-10">&times;</button>
+                <img id="modalDishImage" src="" alt="Hình ảnh món ăn" class="w-full h-64 object-cover rounded-t-lg">
+            </div>
+            <div class="p-6">
+                <h3 id="modalDishName" class="text-3xl font-bold text-amber-600 mb-3"></h3>
+                <p id="modalDishDescription" class="text-gray-700 mb-4"></p>
+                <p class="text-2xl font-bold text-amber-500 mb-6" id="modalDishPrice"></p>
+                <button class="w-full btn-primary text-white font-semibold py-3 rounded-lg">Đặt Món Này (Tính năng Demo)</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: false, 
+        });
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                mobileMenu.classList.add('hidden'); 
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const headerOffset = document.querySelector('header').offsetHeight;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        });
+
+        // Dish Modal Logic
+        const dishModal = document.getElementById('dishModal');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const menuItemDetailButtons = document.querySelectorAll('.menu-item-details-button');
+        const modalDishImage = document.getElementById('modalDishImage');
+        const modalDishName = document.getElementById('modalDishName');
+        const modalDishDescription = document.getElementById('modalDishDescription');
+        const modalDishPrice = document.getElementById('modalDishPrice');
+
+        menuItemDetailButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const card = button.closest('.menu-card');
+                modalDishImage.src = card.dataset.dishImage || 'https://placehold.co/400x300/CCCCCC/FFFFFF?text=Ảnh+Món+Ăn';
+                modalDishName.textContent = card.dataset.dishName || 'Tên Món Ăn';
+                modalDishDescription.textContent = card.dataset.dishDescription || 'Mô tả chi tiết món ăn...';
+                modalDishPrice.textContent = card.dataset.dishPrice || 'Giá Liên Hệ';
+                
+                dishModal.classList.remove('opacity-0', 'pointer-events-none');
+                dishModal.querySelector('.modal-content').classList.remove('scale-95');
+                dishModal.querySelector('.modal-content').classList.add('scale-100');
+                document.body.classList.add('overflow-hidden'); // Prevent background scroll
+            });
+        });
+
+        function closeTheModal() {
+            dishModal.classList.add('opacity-0');
+            dishModal.querySelector('.modal-content').classList.add('scale-95');
+            dishModal.querySelector('.modal-content').classList.remove('scale-100');
+            setTimeout(() => { 
+                 dishModal.classList.add('pointer-events-none');
+            }, 250);
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        closeModalButton.addEventListener('click', closeTheModal);
+        dishModal.addEventListener('click', (event) => {
+            if (event.target === dishModal) {
+                closeTheModal();
+            }
+        });
+
+        // --- Gemini API Integration ---
+        const apiKey = ""; // QUAN TRỌNG: Để trống nếu không có key. Canvas sẽ tự cung cấp key cho gemini-2.0-flash.
+                           // Nếu bạn muốn dùng model khác, hãy điền API key của bạn vào đây.
+
+        const dailySpecialButton = document.getElementById('suggestDishButton');
+        const dailySpecialLoading = document.getElementById('dailySpecialLoading');
+        const dailySpecialSuggestionDiv = document.getElementById('dailySpecialSuggestion');
+
+        const eventIdeaButton = document.getElementById('suggestEventButton');
+        const eventTypeInput = document.getElementById('eventType');
+        const eventIdeaLoading = document.getElementById('eventIdeaLoading');
+        const eventIdeaSuggestionDiv = document.getElementById('eventIdeaSuggestion');
+        
+        // Hàm gọi Gemini API
+        async function callGeminiAPI(prompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            // For gemini-2.0-flash, history is not directly supported in the same way as older models.
+            // We send a direct prompt.
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Error:", errorData);
+                    return `Lỗi từ API: ${errorData.error?.message || response.statusText}. Vui lòng kiểm tra API key và cấu hình.`;
+                }
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates.length > 0 &&
+                    data.candidates[0].content && data.candidates[0].content.parts &&
+                    data.candidates[0].content.parts.length > 0) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    console.error("Unexpected API response structure:", data);
+                    return "Không nhận được gợi ý từ AI. Vui lòng thử lại.";
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                return "Đã xảy ra lỗi khi kết nối đến AI. Vui lòng thử lại sau.";
+            }
+        }
+
+        // Gợi ý món đặc biệt
+        if (dailySpecialButton) {
+            dailySpecialButton.addEventListener('click', async () => {
+                dailySpecialLoading.classList.remove('hidden');
+                dailySpecialSuggestionDiv.classList.add('hidden');
+                dailySpecialSuggestionDiv.innerHTML = "";
+
+                const prompt = "Bạn là một đầu bếp tài năng của xe tải đồ ăn nhanh StreetBites. Hãy gợi ý một món ăn đặc biệt cho ngày hôm nay thật hấp dẫn và độc đáo, kèm theo một mô tả ngắn gọn, lôi cuốn (khoảng 2-3 câu). Thực đơn chính của StreetBites gồm burger, xiên que, khoai tây chiên và các loại nước ép. Hãy sáng tạo dựa trên những món đó hoặc kết hợp chúng một cách thú vị.";
+                
+                const suggestion = await callGeminiAPI(prompt);
+                
+                dailySpecialLoading.classList.add('hidden');
+                dailySpecialSuggestionDiv.innerHTML = suggestion.replace(/\n/g, '<br>'); // Preserve line breaks
+                dailySpecialSuggestionDiv.classList.remove('hidden');
+            });
+        }
+
+        // Gợi ý ý tưởng sự kiện
+        if (eventIdeaButton) {
+            eventIdeaButton.addEventListener('click', async () => {
+                const eventDescription = eventTypeInput.value.trim();
+                if (!eventDescription) {
+                    eventIdeaSuggestionDiv.innerHTML = "Vui lòng mô tả sự kiện của bạn để AI có thể gợi ý.";
+                    eventIdeaSuggestionDiv.classList.remove('hidden');
+                    return;
+                }
+
+                eventIdeaLoading.classList.remove('hidden');
+                eventIdeaSuggestionDiv.classList.add('hidden');
+                eventIdeaSuggestionDiv.innerHTML = "";
+
+                const prompt = `Tôi đang lên kế hoạch cho một sự kiện và muốn đặt đồ ăn từ xe tải StreetBites. Mô tả sự kiện của tôi là: "${eventDescription}". Thực đơn chính của StreetBites gồm burger, xiên que, khoai tây chiên và các loại nước ép. Dựa vào mô tả sự kiện và thực đơn, hãy gợi ý cho tôi một vài ý tưởng về cách StreetBites có thể phục vụ cho sự kiện này (ví dụ: combo gợi ý, cách bày trí, món đặc biệt cho sự kiện). Trình bày các gợi ý một cách rõ ràng, thân thiện và hấp dẫn.`;
+                
+                const suggestion = await callGeminiAPI(prompt);
+                
+                eventIdeaLoading.classList.add('hidden');
+                eventIdeaSuggestionDiv.innerHTML = suggestion.replace(/\n/g, '<br>');
+                eventIdeaSuggestionDiv.classList.remove('hidden');
+            });
+        }
+
+        // Ngăn chặn form liên hệ submit (chỉ là demo)
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Cảm ơn bạn đã liên hệ! Đây là tính năng demo, tin nhắn của bạn chưa được gửi đi.');
+            });
+        }
+
+    </script>
+</body>
+</html>
