@@ -10,12 +10,19 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            /* Nền web gradient vàng nhạt với watermark "StreetBites-locpnv" màu trắng */
-            background: linear-gradient(to bottom, #fffefa, #fffacd); /* Gradient from very light yellow to light yellow */
-            background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='250px' width='450px'%3E%3Cstyle%3E.font-pacifico { font-family: 'Pacifico', cursive; } %3C/style%3E%3Ctext x='50%' y='50%' font-size='30' class='font-pacifico' fill='rgba(255,255,255,0.1)' text-anchor='middle' dominant-baseline='middle' transform='rotate(-30, 225, 125)'%3EStreetBites-locpnv%3C/text%3E%3C/svg%3E"), linear-gradient(to bottom, #fffefa, #fffacd);
-            background-repeat: repeat, no-repeat;
+            /* Nền web gradient vàng rõ ràng hơn và watermark */
+            background-color: #fffde7; /* Fallback color: Very light yellow */
+            /* CSS cho phép nhiều background-image, khai báo theo thứ tự lớp.
+                Lớp đầu tiên (watermark SVG) sẽ nằm trên lớp thứ hai (gradient).
+            */
+            background-image:
+                /* Watermark SVG - tăng độ đậm của fill một chút */
+                url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='250px' width='450px'%3E%3Cstyle%3E.font-pacifico { font-family: 'Pacifico', cursive; } %3C/style%3E%3Ctext x='50%' y='50%' font-size='30' class='font-pacifico' fill='rgba(255,255,255,0.25)' text-anchor='middle' dominant-baseline='middle' transform='rotate(-30, 225, 125)'%3EStreetBites-locpnv%3C/text%3E%3C/svg%3E"),
+                /* Gradient vàng rõ ràng hơn */
+                linear-gradient(to bottom, #fff59d, #ffee58); /* Gradient from Light Yellow to Yellow */
+            background-repeat: repeat, no-repeat; /* Watermark repeat, gradient no-repeat */
             background-position: center, center;
-            background-attachment: fixed; /* Watermark and gradient fixed during scroll */
+            background-attachment: fixed, fixed; /* Both fixed during scroll */
             color: #374151; /* text-gray-700 */
             min-height: 100vh;
         }
@@ -24,7 +31,7 @@
         }
         .hero-bg {
             /* Hình ảnh xe tải ẩm thực nổi bật và hấp dẫn */
-            background-image: url('https://images.unsplash.com/photo-1570066706801-9f039e705380?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); /* [Ảnh của Xe tải đồ ăn màu sắc rực rỡ vào ban ngày] */
+            background-image: url('https://images.unsplash.com/photo-1570066706801-9f039e705380?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
         }
@@ -106,7 +113,7 @@
         .gemini-suggestion-box {
             min-height: 80px;
             border: 2px dashed #F59E0B;
-            background-color: rgba(255, 251, 235, 0.9); /* bg-amber-50 with slight opacity to show watermark a bit */
+            background-color: rgba(255, 253, 237, 0.9); /* #fffde7 with opacity */
         }
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
@@ -146,11 +153,24 @@
             height: 100%;
             border:0;
         }
-        .content-card { /* For cards like menu items, contact form box, about content box */
-            background-color: #ffffff; /* bg-white */
+        /* Các khối nội dung sẽ có nền riêng để nổi bật trên nền body */
+        .content-block {
+            background-color: #ffffff; /* Nền trắng cho các khối nội dung chính */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            padding: 1.5rem; /* p-6 */
         }
-        .section-content-bg { /* For areas like the schedule box inside location section */
-             background-color: #f9fafb; /* bg-gray-50 */
+        .menu-card { /* Thẻ món ăn cũng là một content-block */
+             background-color: #ffffff;
+        }
+         .schedule-box { /* Hộp lịch trình */
+            background-color: #f9fafb; /* bg-gray-50 */
+            padding: 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.05); /* shadow-inner */
+        }
+        .contact-form-box {
+             background-color: #ffffff;
         }
 
     </style>
@@ -193,7 +213,7 @@
     <section id="about" class="py-20">
         <div class="container mx-auto px-6 relative z-10">
             <h2 class="section-title text-4xl font-bold text-center mb-12" data-aos="fade-down">Về <span class="font-pacifico text-amber-500">StreetBites</span></h2>
-            <div class="flex flex-col md:flex-row items-center gap-10 p-6 md:p-8 content-card rounded-xl shadow-xl">
+            <div class="flex flex-col md:flex-row items-center gap-10 content-block md:p-8">
                 <div class="md:w-1/2" data-aos="fade-right">
                     <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Đội ngũ StreetBites thân thiện và chuyên nghiệp" class="rounded-lg shadow-lg w-full h-auto object-cover" style="max-height: 400px;">
                 </div>
@@ -214,7 +234,7 @@
         <div class="container mx-auto px-6 relative z-10">
             <h2 class="section-title text-4xl font-bold text-center mb-8" data-aos="fade-down">Thực Đơn <span class="font-pacifico text-amber-500">Hấp Dẫn</span></h2>
 
-            <div class="text-center mb-12 p-6 content-card rounded-xl shadow-xl" data-aos="fade-up">
+            <div class="text-center mb-12 content-block" data-aos="fade-up">
                 <button id="suggestDishButton" class="btn-secondary text-white font-semibold py-3 px-6 rounded-full text-lg shadow-md hover:shadow-lg">
                     ✨ Gợi Ý Món Đặc Biệt Hôm Nay
                 </button>
@@ -227,7 +247,7 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="menu-card content-card rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up"
+                <div class="menu-card rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up"
                      data-dish-name="Burger Bò Đặc Biệt"
                      data-dish-description="Thịt bò Úc xay, phô mai cheddar tan chảy, xà lách, cà chua, hành tây và sốt StreetBites bí truyền. Một tuyệt tác burger!"
                      data-dish-price="79.000 VNĐ"
@@ -244,7 +264,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="menu-card content-card rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="100"
+                <div class="menu-card rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="100"
                      data-dish-name="Xiên Que Gà Nướng BBQ"
                      data-dish-description="Thịt gà mềm được tẩm ướp gia vị BBQ đậm đà, nướng trên than hồng thơm phức. Ăn là ghiền!"
                      data-dish-price="25.000 VNĐ/xiên"
@@ -260,7 +280,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="menu-card content-card rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="200"
+                <div class="menu-card rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="200"
                      data-dish-name="Khoai Tây Chiên Giòn"
                      data-dish-description="Khoai tây tươi cắt sợi, chiên vàng giòn rụm, lắc cùng phô mai hoặc muối ớt tùy chọn. Món ăn vặt không thể thiếu!"
                      data-dish-price="30.000 VNĐ"
@@ -277,7 +297,7 @@
                         </div>
                     </div>
                 </div>
-                 <div class="menu-card content-card rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="300"
+                 <div class="menu-card rounded-xl shadow-lg overflow-hidden transform hover:shadow-2xl transition-shadow duration-300" data-aos="zoom-in-up" data-aos-delay="300"
                       data-dish-name="Nước Chanh Leo Giải Nhiệt"
                       data-dish-description="Chanh leo tươi mát lạnh, chua ngọt hài hòa, đánh tan cơn khát mùa hè."
                       data-dish-price="20.000 VNĐ"
@@ -304,7 +324,7 @@
             <div class="flex flex-col lg:flex-row gap-10 items-start p-6 md:p-8 content-card rounded-xl shadow-xl">
                 <div class="lg:w-2/3" data-aos="fade-right">
                     <h3 class="text-2xl font-semibold mb-4 text-gray-700">Lịch Trình Di Chuyển</h3>
-                    <div class="space-y-4 section-content-bg p-6 rounded-lg shadow-inner">
+                    <div class="space-y-4 schedule-box">
                         <div>
                             <h4 class="text-lg font-semibold text-amber-600">Thứ 2 - Thứ 6 (17:00 - 22:00)</h4>
                             <p class="text-gray-600">📍 Công viên Lê Thị Riêng, Quận 10 (Gần cổng chính)</p>
@@ -324,7 +344,7 @@
                      <h3 class="text-2xl font-semibold mb-4 text-gray-700">Bản Đồ Minh Họa</h3>
                      <div class="map-container rounded-lg shadow-xl overflow-hidden">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3456.609951218077!2d31.13200921511299!3d29.97923448188709!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14584f7de239bb81%3A0x1de74e68c4f16a10!2sGreat%20Pyramid%20of%20Giza!5e0!3m2!1sen!2seg!4v1621852300000!5m2!1sen!2seg0"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3456.609951218077!2d31.13200921511299!3d29.97923448188709!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14584f7de239bb81%3A0x1de74e68c4f16a10!2sGreat%20Pyramid%20of%20Giza!5e0!3m2!1sen!2seg!4v1621852300000!5m2!1sen!2seg2"
                             allowfullscreen=""
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade">
@@ -338,7 +358,7 @@
     <section id="contact" class="py-20 bg-amber-500 text-white">
         <div class="container mx-auto px-6">
             <h2 class="section-title text-4xl font-bold text-center mb-12 !text-white after:!bg-white" data-aos="fade-down">Liên Hệ <span class="font-pacifico">StreetBites</span></h2>
-            <div class="max-w-2xl mx-auto bg-white text-gray-800 p-8 rounded-xl shadow-2xl" data-aos="flip-up">
+            <div class="max-w-2xl mx-auto contact-form-box text-gray-800 p-8 rounded-xl shadow-2xl" data-aos="flip-up">
                 <form action="#" method="POST" id="contactForm">
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên</label>
