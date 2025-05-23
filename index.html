@@ -19,6 +19,7 @@
             background-attachment: fixed, fixed; 
             color: #374151; 
             min-height: 100vh;
+            overflow-x: hidden; /* Ngăn thanh cuộn ngang do xe tải */
         }
         .font-pacifico {
             font-family: 'Pacifico', cursive;
@@ -163,6 +164,55 @@
         }
         .contact-form-box {
              background-color: #ffffff;
+        }
+
+        /* Animated Food Truck */
+        #animatedTruckContainer {
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            height: 70px; /* Adjust height as needed */
+            pointer-events: none; /* Allow clicks to pass through */
+            z-index: 150; /* Ensure it's above most content but below modals */
+            overflow: hidden;
+        }
+        #animatedTruck {
+            position: absolute;
+            bottom: 0;
+            left: -100px; /* Start off-screen */
+            font-size: 50px; /* Adjust size of truck emoji */
+            animation: driveAcross 15s linear infinite;
+        }
+        .smoke-puff {
+            position: absolute;
+            bottom: 20px; /* Adjust based on truck size */
+            left: -15px;  /* Adjust based on truck size, relative to truck's position */
+            width: 10px;
+            height: 10px;
+            background-color: rgba(200, 200, 200, 0.5);
+            border-radius: 50%;
+            opacity: 0;
+            animation: smokeAnimation 2s ease-out;
+        }
+
+        @keyframes driveAcross {
+            0% {
+                transform: translateX(0px);
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)); /* Move across screen width + its own width */
+            }
+        }
+        @keyframes smokeAnimation {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px) scale(1.5);
+            }
         }
 
     </style>
@@ -424,6 +474,10 @@
         </div>
     </section>
 
+    <div id="animatedTruckContainer">
+        <div id="animatedTruck">🚚</div>
+    </div>
+
     <footer class="bg-gray-800 text-gray-300 py-8 text-center">
         <p>© <span id="currentYear"></span> StreetBites Delights. Mọi quyền được bảo lưu.</p>
         <p class="text-sm">Thiết kế với <span class="text-red-500">♥</span> bởi AI.</p>
@@ -545,10 +599,9 @@
             }
         });
 
-        // QUAN TRỌNG: Biến apiKey được để trống.
-        // Trong môi trường Canvas, API key sẽ được tự động cung cấp cho gemini-2.0-flash.
-        // Nếu bạn muốn dùng model khác hoặc chạy bên ngoài Canvas, hãy điền API key của bạn vào đây.
-        const apiKey = ""; 
+        // QUAN TRỌNG: Thay thế bằng API Key thực tế của bạn khi triển khai.
+        // Để an toàn, hãy sử dụng biến môi trường trên Netlify và Netlify Functions.
+        const apiKey = "AIzaSyC7pKjxy5uhAHLIe-B3lSss-4omZP3lGtQ"; 
 
         const dailySpecialButton = document.getElementById('suggestDishButton');
         const dailySpecialLoading = document.getElementById('dailySpecialLoading');
@@ -565,6 +618,12 @@
         const enhancedReviewSuggestionDiv = document.getElementById('enhancedReviewSuggestion');
 
         async function callGeminiAPI(prompt) {
+            // Nếu không có apiKey, không thực hiện gọi API (chỉ áp dụng khi deploy ngoài Canvas)
+            if (!apiKey && window.location.hostname !== "localhost" /*Thêm điều kiện kiểm tra môi trường Canvas nếu có*/) {
+                 console.warn("API Key is missing. AI features will not work outside Canvas environment without a key.");
+                 return "Tính năng AI hiện không khả dụng. Vui lòng thử lại sau hoặc liên hệ quản trị viên.";
+            }
+
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
             const payload = {
@@ -591,6 +650,8 @@
                              userFriendlyError = "Lỗi API: API key không hợp lệ. Vui lòng kiểm tra lại cấu hình.";
                         } else if (response.status === 429) {
                             userFriendlyError = "Đầu bếp AI đang hơi quá tải một chút. Bạn vui lòng thử lại sau ít phút nhé!";
+                        } else {
+                            userFriendlyError = `Lỗi từ AI: ${errorData.error.message}`;
                         }
                     }
                     return userFriendlyError;
@@ -620,11 +681,7 @@
                 dailySpecialLoading.classList.remove('hidden');
                 dailySpecialSuggestionDiv.classList.add('hidden');
                 dailySpecialSuggestionDiv.innerHTML = "";
-
-                const prompt = "Bạn là một đầu bếp tài năng của xe tải đồ ăn nhanh StreetBites. Hãy gợi ý một món ăn đặc biệt cho ngày hôm nay thật hấp dẫn và độc đáo, kèm theo một mô tả ngắn gọn, lôi cuốn (khoảng 2-3 câu). Thực đơn chính của StreetBites gồm burger, xiên que, khoai tây chiên và các loại nước ép. Hãy sáng tạo dựa trên những món đó hoặc kết hợp chúng một cách thú vị.";
-
-                const suggestion = await callGeminiAPI(prompt);
-
+                const suggestion = await callGeminiAPI("Bạn là một đầu bếp tài năng của xe tải đồ ăn nhanh StreetBites. Hãy gợi ý một món ăn đặc biệt cho ngày hôm nay thật hấp dẫn và độc đáo, kèm theo một mô tả ngắn gọn, lôi cuốn (khoảng 2-3 câu). Thực đơn chính của StreetBites gồm burger, xiên que, khoai tây chiên và các loại nước ép. Hãy sáng tạo dựa trên những món đó hoặc kết hợp chúng một cách thú vị.");
                 dailySpecialLoading.classList.add('hidden');
                 dailySpecialSuggestionDiv.innerHTML = suggestion.replace(/\n/g, '<br>');
                 dailySpecialSuggestionDiv.classList.remove('hidden');
@@ -636,18 +693,13 @@
                 const eventDescription = eventTypeInput.value.trim();
                 if (!eventDescription) {
                     eventIdeaSuggestionDiv.innerHTML = "Vui lòng mô tả sự kiện của bạn để AI có thể gợi ý.";
-                    eventIdeaSuggestionDiv.classList.remove('hidden');
-                    return;
+                    eventIdeaSuggestionDiv.classList.remove('hidden'); return;
                 }
-
                 eventIdeaLoading.classList.remove('hidden');
                 eventIdeaSuggestionDiv.classList.add('hidden');
                 eventIdeaSuggestionDiv.innerHTML = "";
-
                 const prompt = `Tôi đang lên kế hoạch cho một sự kiện và muốn đặt đồ ăn từ xe tải StreetBites. Mô tả sự kiện của tôi là: "${eventDescription}". Thực đơn chính của StreetBites gồm burger, xiên que, khoai tây chiên và các loại nước ép. Dựa vào mô tả sự kiện và thực đơn, hãy gợi ý cho tôi một vài ý tưởng về cách StreetBites có thể phục vụ cho sự kiện này (ví dụ: combo gợi ý, cách bày trí, món đặc biệt cho sự kiện). Trình bày các gợi ý một cách rõ ràng, thân thiện và hấp dẫn.`;
-
                 const suggestion = await callGeminiAPI(prompt);
-
                 eventIdeaLoading.classList.add('hidden');
                 eventIdeaSuggestionDiv.innerHTML = suggestion.replace(/\n/g, '<br>');
                 eventIdeaSuggestionDiv.classList.remove('hidden');
@@ -661,10 +713,8 @@
                 generateAIDescriptionButton.disabled = true;
                 aiGeneratedDescriptionDiv.classList.add('hidden');
                 aiGeneratedDescriptionDiv.innerHTML = "";
-
                 const prompt = `Bạn là một nhà văn ẩm thực dí dỏm và sáng tạo. Hãy viết một mô tả thật hấp dẫn, độc đáo và ngắn gọn (khoảng 2-4 câu) cho món ăn có tên "${currentDishNameForAI}" của xe tải đồ ăn nhanh StreetBites. Hãy làm cho nó nghe thật ngon miệng, kích thích vị giác và có chút cá tính riêng của StreetBites!`;
                 const aiDescription = await callGeminiAPI(prompt);
-
                 aiGeneratedDescriptionDiv.innerHTML = aiDescription.replace(/\n/g, '<br>');
                 aiGeneratedDescriptionDiv.classList.remove('hidden');
                 aiDescButtonText.textContent = '✨ Sáng tạo mô tả AI';
@@ -678,24 +728,18 @@
                 const keywords = reviewKeywordsInput.value.trim();
                 if (!keywords) {
                     enhancedReviewSuggestionDiv.innerHTML = "Vui lòng nhập một vài từ khóa về trải nghiệm của bạn.";
-                    enhancedReviewSuggestionDiv.classList.remove('hidden');
-                    return;
+                    enhancedReviewSuggestionDiv.classList.remove('hidden'); return;
                 }
-
                 reviewEnhancerLoading.classList.remove('hidden');
                 enhancedReviewSuggestionDiv.classList.add('hidden');
                 enhancedReviewSuggestionDiv.innerHTML = "";
-
                 const prompt = `Tôi vừa trải nghiệm dịch vụ và món ăn tại xe tải StreetBites. Cảm nhận của tôi có thể tóm gọn trong các từ khóa sau: "${keywords}". Bạn hãy giúp tôi viết một đoạn đánh giá hoàn chỉnh (khoảng 3-5 câu) dựa trên những từ khóa này. Hãy làm cho đoạn đánh giá nghe thật tự nhiên, tích cực, lôi cuốn và chân thực, như thể một khách hàng thực sự đang chia sẻ.`;
-
                 const enhancedReview = await callGeminiAPI(prompt);
-
                 reviewEnhancerLoading.classList.add('hidden');
                 enhancedReviewSuggestionDiv.innerHTML = enhancedReview.replace(/\n/g, '<br>');
                 enhancedReviewSuggestionDiv.classList.remove('hidden');
             });
         }
-
 
         const contactForm = document.getElementById('contactForm');
         if (contactForm) {
@@ -705,25 +749,54 @@
                 const originalButtonText = submitButton.innerHTML;
                 submitButton.innerHTML = 'Đang gửi...';
                 submitButton.disabled = true;
-
                 const notification = document.getElementById('formNotification');
                 notification.classList.add('hidden');
-
                 setTimeout(() => {
                     notification.className = 'mt-4 p-3 rounded-lg text-sm text-center bg-green-100 text-green-700';
                     notification.textContent = 'Cảm ơn bạn đã liên hệ! Đây là tính năng demo, tin nhắn của bạn chưa được gửi đi thực tế.';
                     notification.classList.remove('hidden');
-
                     submitButton.innerHTML = originalButtonText;
                     submitButton.disabled = false;
                     this.reset();
-
-                    setTimeout(() => {
-                        notification.classList.add('hidden');
-                    }, 5000);
+                    setTimeout(() => { notification.classList.add('hidden'); }, 5000);
                 }, 1000);
             });
         }
+
+        // Animated Truck Logic
+        const animatedTruck = document.getElementById('animatedTruck');
+        const truckContainer = document.getElementById('animatedTruckContainer');
+        let smokeInterval;
+
+        function createSmokePuff() {
+            if (!animatedTruck) return;
+            const smokePuff = document.createElement('div');
+            smokePuff.className = 'smoke-puff';
+            // Position smoke relative to the truck's current position
+            // This is tricky as the truck moves via transform. We'll attach it to the truck.
+            animatedTruck.appendChild(smokePuff);
+            
+            // Remove puff after animation
+            setTimeout(() => {
+                if (smokePuff.parentNode) {
+                    smokePuff.parentNode.removeChild(smokePuff);
+                }
+            }, 2000); // Match smokeAnimation duration
+        }
+
+        if (animatedTruck) {
+            animatedTruck.addEventListener('animationiteration', () => {
+                // Reset position if needed, though CSS infinite handles looping
+                // Clear any existing smoke puffs from previous runs if necessary
+                animatedTruck.innerHTML = '🚚'; // Reset to just the truck if smoke puffs accumulate
+            });
+            
+            // Start emitting smoke
+             smokeInterval = setInterval(createSmokePuff, 500); // Emit smoke every 500ms
+        }
+         // Clean up interval if the element is ever removed (though not strictly necessary here)
+        // window.addEventListener('beforeunload', () => clearInterval(smokeInterval));
+
 
     </script>
 </body>
